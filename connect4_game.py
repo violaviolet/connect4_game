@@ -41,20 +41,30 @@ def drop_disc_in_column(selected_column, board, user):
         else:
             break
     board[empty_row][selected_column] = user
-    draw_board(board)
-    return empty_row
-
+    return board
 
 
 test_board = [["*", "*", "*", "*", "*", "*", "*"],
              ["*", "*", "*", "*", "*", "*", "*"],
-             ["*", "*", "*", "*", "*", "*", "*"],
-             ["*", "*", "*", "*", "*", 2, "*"],
-             ["*", "*", "*", "*", "*", 2, "*"],
-             [2,    2,   1,  "*",  2,  2,  2]]
+             ["*", "*", "*", 2, "*", "*", "*"],
+             ["*", "*", "*", 2, "*", 2, "*"],
+             ["*", "*", "*", 2, "*", 2, "*"],
+             [2,    2,   1,  2,  2,  2,  2]]
+
+#print(drop_disc_in_column(2, test_board, 1))
 
 
-def is_horizontal_four_in_line(board, selected_column, user):
+def check_row_of_last_move(board, selected_column, user):
+    row_index = 0
+    for row in range(len(board)):
+        if board[row][selected_column] == "*":
+            row_index = row + 1
+    return row_index
+
+#print(check_row_of_last_move(test_board, 5, 2))
+
+
+def is_vertical_four_in_line(board, selected_column, user):
     win_counter = 0
     for row in range(len(board)):
         if board[row][selected_column] == user:
@@ -63,21 +73,25 @@ def is_horizontal_four_in_line(board, selected_column, user):
         return True
 
 
-def is_vertical_four_in_line(board, selected_column, user):
+
+def is_horizontal_four_in_line(board, selected_column, user):
     win_counter = 0
-    last_move_index = drop_disc_in_column(selected_column, board, user)
-    for column in range(len(board[last_move_index])):
-        if board[last_move_index][column] == user:
+    last_move_row_index = check_row_of_last_move(board, selected_column, user)
+    for column in range(len(board[last_move_row_index])):
+        if board[last_move_row_index][column] == user:
             win_counter = win_counter + 1
         else:
             win_counter = 0
     if win_counter >= 4:
         return True
 
+#print(is_vertical_four_in_line(test_board, 3, 2))
+
 
 def check_winner(board, selected_column, user):
     if is_horizontal_four_in_line(board, selected_column, user) is True or is_vertical_four_in_line(board, selected_column, user) is True:
         print("Congrats you won player:", user)
+    return
 
 #print(is_vertical_four_in_line(test_board, 5, 2))
 #print(is_horizontal_four_in_line(test_board, 5, 2))
@@ -105,10 +119,12 @@ def game_start():
         except:
             print("Wrong type")
             continue
-        if user_input == 0 or user_input > 7:
+        if user_input > 7:
             print("Wrong value")
             continue
-        drop_disc_in_column(user_input, board, user)
+        draw_board(board)
+        board = drop_disc_in_column(user_input, board, user)
+        draw_board(board)
         check_winner(board, user_input, user)
         turn += 1
         user = (user % 2) + 1
