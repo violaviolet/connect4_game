@@ -1,5 +1,6 @@
 import sys
-from termcolor import colored, cprint
+from termcolor import colored
+
 """ 
 def draw_board2(board):
     for podlista in board:
